@@ -1,0 +1,35 @@
+body{
+    background: #f7f7f7;
+    /*
+    width: auto;
+    height: auto;
+    */
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+a{
+    color: rgb(109, 163, 189);
+    text-decoration: none;
+}
+a:hover{
+    /* color: rgb(77, 114, 133); */
+    text-decoration: underline;
+}
+a:visited{
+}
+#page {
+    text-align: center;
+}
+.login {
+    margin-left: auto;
+    margin-right: auto;
+    padding: 30px;
+    width: 160px;
+    background: #fff;
+}
+#login_pass,
+#login_submit {
+    margin-top: 20px;
+}
+
