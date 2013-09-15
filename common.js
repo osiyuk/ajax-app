@@ -99,13 +99,13 @@ function loadTransaction() {
     radio.type = 'radio';
     radio.name = 'flow';
 
-    radio.checked = true;
     radio.setAttribute('value', 'income');
+    radio.setAttribute('checked', '');
     div.innerHTML = div.innerHTML + '<label>' +
         radio.outerHTML + 'Ввод' + '</label>';
 
-    radio.checked = false;
     radio.setAttribute('value', 'outcome');
+    radio.removeAttribute('checked');
     div.innerHTML = div.innerHTML + '<label>' +
         radio.outerHTML + 'Вывод' + '</label><br />';
 
@@ -128,7 +128,7 @@ function loadTransaction() {
 
     var button = document.createElement('button');
     button.id = 'make_transac';
-    button.innerHTML = 'Отправить';
+    button.innerHTML = 'Оформить';
 
     var page = $('page');
     div.innerHTML = div.innerHTML + button.outerHTML;
@@ -140,7 +140,7 @@ function loadTransaction() {
     }
 }
 
-function makeTransaction() {
+function collectTransaction() {
     var flow = document.getElementsByName('flow');
 
     cur.transaction = {};
@@ -163,10 +163,54 @@ function makeTransaction() {
             cur.transaction[stone] = 0;
         }
     }
-
     console.log(cur);
 
     // сформировать страницу подтверждения
+}
+
+function makeTransaction() {
+    collectTransaction();
+    var jewel = cur.jewel;
+    var data = cur.transaction;
+
+    var div = document.createElement('div');
+    div.className = 'confirm';
+
+    var head = 'Оформление заявки на ';
+    if (data.status == 'income') {
+        head += 'ввод';
+    } else {
+        head += 'вывод';
+    }
+    head += ':<br />';
+
+    var body = '';
+    for (var num in jewel) {
+        var stone = jewel[num];
+
+        if (data[stone] == 0) continue;
+        body += stone + ': <b>' + data[stone] + '</b><br />';
+    }
+
+    var button = document.createElement('button');
+
+    button.id = 'confirm_transac';
+    button.innerHTML = 'Отправить';
+    div.innerHTML = head + body + button.outerHTML;
+
+    button.id = 'load_transac';
+    button.innerHTML = 'Отменить';
+    div.innerHTML = div.innerHTML + button.outerHTML;
+
+    $('page').innerHTML = div.outerHTML;
+    cur.resource.name = 'confirm';
+
+    $('confirm_transac').onclick = function() {
+        confirmTransaction();
+    };
+    $('load_transac').onclick = function() {
+        loadTransaction();
+    };
 }
 
 function confirmTransaction() {
