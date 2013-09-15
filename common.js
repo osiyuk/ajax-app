@@ -95,6 +95,20 @@ function loadTransaction() {
     var div = document.createElement('div');
     div.className = 'transaction';
 
+    var radio = document.createElement('input');
+    radio.type = 'radio';
+    radio.name = 'flow';
+
+    radio.checked = true;
+    radio.setAttribute('value', 'income');
+    div.innerHTML = div.innerHTML + '<label>' +
+        radio.outerHTML + 'Ввод' + '</label>';
+
+    radio.checked = false;
+    radio.setAttribute('value', 'outcome');
+    div.innerHTML = div.innerHTML + '<label>' +
+        radio.outerHTML + 'Вывод' + '</label><br />';
+
     var jewel = cur.jewel;
     for (var num in jewel) {
         var stone = jewel[num];
@@ -127,7 +141,17 @@ function loadTransaction() {
 }
 
 function makeTransaction() {
+    var flow = document.getElementsByName('flow');
+
     cur.transaction = {};
+
+    for(var i in flow) {
+        if (flow[i].checked === true) {
+            cur.transaction.status = flow[i].value;
+            break;
+        }
+    }
+
     var jewel = cur.jewel;
     for (var num in jewel) {
         var stone = jewel[num];
