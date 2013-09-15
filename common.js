@@ -34,6 +34,7 @@ function Resource(name) {
             div.innerHTML = this.responseText;
 
             var page = document.getElementById('page');
+            console.assert( $('page') === page, '$ is not work!' );
             page.innerHTML = div.outerHTML;
         }
     }
@@ -41,53 +42,114 @@ function Resource(name) {
     this.reload(name);
 }
 
-var user = {
-    name: '',
-    pass: '',
-
-    validate: function() {
-        var url = '/auth.php';
-        var hash = this.name + '::' + this.pass;
-
-        console.time('post req');
-        var xhr = POSTRequest(url, hash);
-
-        var l_name = select('login_name');
-        var l_pass = select('login_pass');
-        xhr.onload = function() {
-            console.log(this);
-            if (this.responseText != 'good') {
-                name = '';
-                pass = '';
-                l_name.value = '';
-                l_pass.value = '';
-            } else {
-                //cur.resource.reload('storage');
-                cur.resource = new Resource('storage');
-            }
-            console.timeEnd('post req');
-        }
-    }
-}
-
 var cur = {};
+
+cur.user = {
+    name: '',
+    pass: ''
+};
+
+cur.jewel = [
+'green', 'red', 'purple', 'white', 'blue', 'azure',
+    ];
 
 // загружаем главную страницу
 window.onload = function() {
+    loadLogin();
+}
+
+function loadLogin() {
     cur.resource = new Resource('login');
 }
 
-// поведение кнопки
 function loginParse() {
-    var l_name = select('login_name');
-    var l_pass = select('login_pass');
-    user.name = l_name.value;
-    user.pass = l_pass.value;
-    user.validate();
+    var user = cur.user;
+
+    user.name = $('login_name').value;
+    user.pass = $('login_pass').value;
+    var data = user.name + '::' + user.pass;
+
+    console.time('get auth');
+    var xhr = POSTRequest('/auth.php', data);
+
+    xhr.onload = function() {
+       console.log(this);
+       if (this.responseText != 'good') {
+           $('login_name').value =
+               $('login_pass').value =
+               user.name = user.pass = '';
+       } else {
+           cur.resource = new Resource('storage');
+       }
+       console.timeEnd('get auth');
+    }
+
+    console.log(user);
 }
 
 // избавится от этого костыля
 function select(name) {
     return document.getElementById(name);
+}
+
+function $(id) {
+    return document.getElementById(id);
+}
+
+function loadTransaction() {
+    var div = document.createElement('div');
+    div.className = 'transaction';
+
+    var jewel = cur.jewel;
+    for (var num in jewel) {
+        var stone = jewel[num];
+
+        var label = document.createElement('label');
+        label.htmlFor = stone;
+        label.innerHTML = stone;
+
+        var input = document.createElement('input');
+        input.type = 'text';
+        input.id = stone;
+        input.setAttribute('value', '');
+
+        div.innerHTML = div.innerHTML +
+            label.outerHTML + input.outerHTML + '<br />';
+    }
+
+    var button = document.createElement('button');
+    button.id = 'make_transac';
+    button.innerHTML = 'Отправить';
+
+    var page = $('page');
+    div.innerHTML = div.innerHTML + button.outerHTML;
+    page.innerHTML = div.outerHTML;
+    cur.resource.name = 'transaction';
+
+    $('make_transac').onclick = function() {
+        makeTransaction();
+    }
+}
+
+function makeTransaction() {
+    cur.transaction = {};
+    var jewel = cur.jewel;
+    for (var num in jewel) {
+        var stone = jewel[num];
+        var value = parseInt( $(stone).value );
+
+        if (value) {
+            cur.transaction[stone] = value;
+        } else {
+            cur.transaction[stone] = 0;
+        }
+    }
+
+    console.log(cur);
+
+    // сформировать страницу подтверждения
+}
+
+function confirmTransaction() {
 }
 
