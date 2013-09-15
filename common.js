@@ -1,3 +1,7 @@
+function $(id) {
+    return document.getElementById(id);
+}
+
 function GETRequest(url) {
     var xhr = new XMLHttpRequest();
 
@@ -85,15 +89,6 @@ function loginParse() {
     }
 
     console.log(user);
-}
-
-// избавится от этого костыля
-function select(name) {
-    return document.getElementById(name);
-}
-
-function $(id) {
-    return document.getElementById(id);
 }
 
 function loadTransaction() {
