@@ -3,9 +3,7 @@ require_once('debug.php');
 require_once('database.php');
 
 $data = $_POST['data'];
-
 $obj = json_decode($data, true);
-//echo dump($obj);
 
 $user = $obj['user'];
 $name = $user['name'];
@@ -16,13 +14,11 @@ if ( validate($name) && validate($pass) ) {
         $info = $obj['info'];
         $timestamp = $info['timestamp'];
         $storage = $info['storage'];
-        $data = json_encode( $obj['transaction'] );
-        echo dump($data);
 
+        $data = json_encode( $obj['transaction'] );
         $sql = "insert into `transactions` "
             ."(timestamp, storage, user, data) "
             ."values ('$timestamp', '$storage', '$name', '$data');";
-        echo dump($sql);
 
         if ( mysql_query($sql) ) {
             echo 'insert complete';
