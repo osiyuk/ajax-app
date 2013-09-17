@@ -77,6 +77,7 @@ function loginParse() {
     var xhr = POSTRequest('/auth.php', data);
 
     xhr.onload = function() {
+       console.timeEnd('get auth');
        console.log(this);
        if (this.responseText != 'good') {
            $('login_name').value =
@@ -85,10 +86,7 @@ function loginParse() {
        } else {
            cur.resource = new Resource('storage');
        }
-       console.timeEnd('get auth');
     }
-
-    console.log(user);
 }
 
 function loadTransaction() {
@@ -159,13 +157,9 @@ function collectTransaction() {
 
         if (value) {
             cur.transaction[stone] = value;
-        } else {
-            cur.transaction[stone] = 0;
         }
     }
     console.log(cur);
-
-    // сформировать страницу подтверждения
 }
 
 function makeTransaction() {
@@ -188,7 +182,7 @@ function makeTransaction() {
     for (var num in jewel) {
         var stone = jewel[num];
 
-        if (data[stone] == 0) continue;
+        if (data[stone] === undefined) continue;
         body += stone + ': <b>' + data[stone] + '</b><br />';
     }
 
@@ -214,5 +208,23 @@ function makeTransaction() {
 }
 
 function confirmTransaction() {
+    var info = {
+        storage: 'proba',
+        timestamp: Math.floor(new Date / 1000)
+    };
+
+    data = JSON.stringify( {
+        user: cur.user,
+        info: info,
+        transaction: cur.transaction
+    } );
+
+    console.time('send transac');
+    var xhr = POSTRequest('/transaction.php', data);
+
+    xhr.onload = function() {
+        console.timeEnd('send transac');
+        console.log(this);
+    }
 }
 
