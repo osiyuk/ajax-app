@@ -25,6 +25,15 @@ function POSTRequest(url, data) {
     return xhr;
 }
 
+function button(id, text) {
+    var result = document.createElement('button');
+
+    result.id = id;
+    result.innerHTML = text;
+
+    return result.outerHTML;
+}
+
 function Resource(name) {
     this.name = name;
 
@@ -108,28 +117,28 @@ function loadTransaction() {
         radio.outerHTML + 'Вывод' + '</label><br />';
 
     var jewel = cur.jewel;
+    console.time('transaction DOM');
     for (var num in jewel) {
         var stone = jewel[num];
 
-        var label = document.createElement('label');
-        label.htmlFor = stone;
-        label.innerHTML = stone;
+        var gif = document.createElement('div');
+        gif.className = stone;
 
         var input = document.createElement('input');
         input.type = 'text';
         input.id = stone;
         input.setAttribute('value', '');
 
-        div.innerHTML = div.innerHTML +
-            label.outerHTML + input.outerHTML + '<br />';
-    }
+        var label = document.createElement('label');
+        label.appendChild(gif);
+        label.appendChild(input);
 
-    var button = document.createElement('button');
-    button.id = 'make_transac';
-    button.innerHTML = 'Оформить';
+        div.innerHTML = div.innerHTML + label.outerHTML + '<br />';
+    }
+    console.timeEnd('transaction DOM');
 
     var page = $('page');
-    div.innerHTML = div.innerHTML + button.outerHTML;
+    div.innerHTML = div.innerHTML + button('make_transac', 'Оформить');
     page.innerHTML = div.outerHTML;
     cur.resource.name = 'transaction';
 
@@ -225,6 +234,16 @@ function confirmTransaction() {
     xhr.onload = function() {
         console.timeEnd('send transac');
         console.log(this);
+
+        switch (xhr.responseText) {
+            case 'insert complete':
+                loadTransaction();
+                break;
+            case 'bad user':
+            case 'fuck u!':
+                loadLogin();
+                break;
+        }
     }
 }
 
