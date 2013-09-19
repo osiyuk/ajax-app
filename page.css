@@ -33,3 +33,48 @@ a:visited{
     margin-top: 20px;
 }
 
+label div {
+    width: 32px;
+    height: 32px;
+    float: left;
+    background: url(img/crystal.jpg) no-repeat;
+}
+
+label .green {
+    background-position: 0 0;
+}
+
+label .red {
+    background-position: -32px 0;
+}
+
+label .purple {
+    background-position: -64px 0;
+}
+
+label .white {
+    background-position: -96px 0;
+}
+
+label .blue {
+    background-position: -128px 0;
+}
+
+label .azure {
+    background-position: -160px 0;
+}
+
+.transaction {
+    margin-left: auto;
+    margin-right: auto;
+    padding: 30px;
+    width: 260px;
+    background: #fff;
+}
+
+.transaction input {
+    margin: 6px 0 6px;
+    border: 1px solid #c0cad5;
+    padding: 3px;
+}
+
