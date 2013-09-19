@@ -34,6 +34,19 @@ function button(id, text) {
     return result.outerHTML;
 }
 
+function radio(name, value, checked) {
+    var result = document.createElement('input');
+
+    result.type = 'radio';
+    result.name = name;
+    result.setAttribute('value', value);
+
+    if (checked === true)
+        result.setAttribute('checked', '');
+
+    return result;
+}
+
 function Resource(name) {
     this.name = name;
 
@@ -102,19 +115,9 @@ function loadTransaction() {
     var div = document.createElement('div');
     div.className = 'transaction';
 
-    var radio = document.createElement('input');
-    radio.type = 'radio';
-    radio.name = 'flow';
-
-    radio.setAttribute('value', 'income');
-    radio.setAttribute('checked', '');
-    div.innerHTML = div.innerHTML + '<label>' +
-        radio.outerHTML + 'Ввод' + '</label>';
-
-    radio.setAttribute('value', 'outcome');
-    radio.removeAttribute('checked');
-    div.innerHTML = div.innerHTML + '<label>' +
-        radio.outerHTML + 'Вывод' + '</label><br />';
+    div.innerHTML = '<label>' + radio('flow', 'income', true) +
+        'Ввод' + '</label><label>' + radio('flow', 'outcome') +
+        'Вывод' + '</label><br />';
 
     var jewel = cur.jewel;
     console.time('transaction DOM');
@@ -176,9 +179,6 @@ function makeTransaction() {
     var jewel = cur.jewel;
     var data = cur.transaction;
 
-    var div = document.createElement('div');
-    div.className = 'confirm';
-
     var head = 'Оформление заявки на ';
     if (data.status == 'income') {
         head += 'ввод';
@@ -195,15 +195,11 @@ function makeTransaction() {
         body += stone + ': <b>' + data[stone] + '</b><br />';
     }
 
-    var button = document.createElement('button');
-
-    button.id = 'confirm_transac';
-    button.innerHTML = 'Отправить';
-    div.innerHTML = head + body + button.outerHTML;
-
-    button.id = 'load_transac';
-    button.innerHTML = 'Отменить';
-    div.innerHTML = div.innerHTML + button.outerHTML;
+    var div = document.createElement('div');
+    div.className = 'confirm';
+    div.innerHTML = head + body +
+        button('confirm_transac', 'Отправить') +
+        button('load_transac', 'Отменить');
 
     $('page').innerHTML = div.outerHTML;
     cur.resource.name = 'confirm';
