@@ -2,16 +2,17 @@ function $(id) {
     return document.getElementById(id);
 }
 
-function GETRequest(url) {
+function GETRequest(url, callback) {
     var xhr = new XMLHttpRequest();
 
     xhr.open('GET', url, true);
     xhr.send(null);
+    xhr.onload = callback;
 
     return xhr;
 }
 
-function POSTRequest(url, data) {
+function POSTRequest(url, data, callback) {
     var xhr = new XMLHttpRequest();
 
     xhr.open('POST', url, true);
@@ -21,6 +22,7 @@ function POSTRequest(url, data) {
 
     data = 'data=' + encodeURIComponent(data);
     xhr.send(data);
+    xhr.onload = callback;
 
     return xhr;
 }
@@ -61,18 +63,16 @@ function Resource(name) {
     this.name = name;
 
     this.reload = function(name) {
-        var url = '/' + name + '.html';
-        var res = GETRequest(url);
         var div = document.createElement('div');
 
-        res.onload = function() {
+        var res = GETRequest('/' + name + '.html', function() {
             div.className = name;
             div.innerHTML = this.responseText;
 
             var page = document.getElementById('page');
             console.assert( $('page') === page, '$ is not work!' );
             page.innerHTML = div.outerHTML;
-        }
+        });
     }
 
     this.reload(name);
@@ -106,9 +106,7 @@ function loginParse() {
     var data = user.name + '::' + user.pass;
 
     console.time('get auth');
-    var xhr = POSTRequest('/auth.php', data);
-
-    xhr.onload = function() {
+    var xhr = POSTRequest('/auth.php', data, function() {
        console.timeEnd('get auth');
        console.log(this);
        if (this.responseText != 'good') {
@@ -118,7 +116,7 @@ function loginParse() {
        } else {
            cur.resource = new Resource('storage');
        }
-    }
+    });
 }
 
 function loadTransaction() {
@@ -231,16 +229,14 @@ function confirmTransaction() {
         timestamp: Math.floor(new Date / 1000)
     };
 
-    data = JSON.stringify( {
+    data = JSON.stringify({
         user: cur.user,
         info: info,
         transaction: cur.transaction
-    } );
+    });
 
     console.time('send transac');
-    var xhr = POSTRequest('/transaction.php', data);
-
-    xhr.onload = function() {
+    var xhr = POSTRequest('/transaction.php', data, function() {
         console.timeEnd('send transac');
         console.log(this);
 
@@ -253,6 +249,6 @@ function confirmTransaction() {
                 loadLogin();
                 break;
         }
-    }
+    });
 }
 
