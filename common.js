@@ -44,6 +44,16 @@ function radio(name, value, checked) {
     if (checked === true)
         result.setAttribute('checked', '');
 
+    return result.outerHTML;
+}
+
+function input(type, id, value) {
+    var result = document.createElement('input');
+
+    result.type = type;
+    result.id = id;
+    result.setAttribute('value', value);
+
     return result;
 }
 
@@ -127,10 +137,13 @@ function loadTransaction() {
         var gif = document.createElement('div');
         gif.className = stone;
 
+        /*
         var input = document.createElement('input');
         input.type = 'text';
         input.id = stone;
         input.setAttribute('value', '');
+        */
+        var input = input('text', stone, '');
 
         var label = document.createElement('label');
         label.appendChild(gif);
