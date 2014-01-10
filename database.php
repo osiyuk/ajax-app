@@ -1,18 +1,16 @@
-<?
+<?php
 $server = "mysql.hostinger.ru";
 $username = "u939023122_user9";
 $password = "user939";
-
-mysql_connect($server, $username, $password);
-
 $database = "u939023122_data";
-mysql_select_db($database);
 
-function validate($data) {
+function validate($data)
+{
     return $data === mysql_real_escape_string($data);
 }
 
-function validateUser($user, $pass) {
+function validateUser($user, $pass)
+{
     $sql = "select count(1) from `users` where " .
         "user='$user' and pass='$pass';";
 
@@ -22,4 +20,4 @@ function validateUser($user, $pass) {
     if ($count == 1) return true;
     return false;
 }
-?>
+

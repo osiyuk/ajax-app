@@ -1,4 +1,4 @@
-<?
+<?php
 require_once('debug.php');
 require_once('database.php');
 
@@ -9,8 +9,11 @@ $user = $obj['user'];
 $name = $user['name'];
 $pass = $user['pass'];
 
-if ( validate($name) && validate($pass) ) {
-    if ( validateUser($name, $pass) ) {
+mysql_connect($server, $username, $password);
+mysql_select_db($database);
+
+if (validate($name) && validate($pass)) {
+    if (validateUser($name, $pass)) {
         $info = $obj['info'];
         $timestamp = $info['timestamp'];
         $storage = $info['storage'];
@@ -20,7 +23,7 @@ if ( validate($name) && validate($pass) ) {
             ."(timestamp, storage, user, data) "
             ."values ('$timestamp', '$storage', '$name', '$data');";
 
-        if ( mysql_query($sql) ) {
+        if (mysql_query($sql)) {
             echo 'insert complete';
         } else {
             echo mysql_error();
@@ -33,4 +36,4 @@ if ( validate($name) && validate($pass) ) {
 }
 
 mysql_close();
-?>
+

@@ -65,7 +65,7 @@ function Resource(name) {
     this.reload = function(name) {
         var div = document.createElement('div');
 
-        var res = GETRequest('/' + name + '.html', function() {
+        GETRequest('/' + name + '.html', function() {
             div.className = name;
             div.innerHTML = this.responseText;
 
@@ -106,7 +106,7 @@ function loginParse() {
     var data = user.name + '::' + user.pass;
 
     console.time('get auth');
-    var xhr = POSTRequest('/auth.php', data, function() {
+    POSTRequest('/auth.php', data, function() {
        console.timeEnd('get auth');
        console.log(this);
        if (this.responseText != 'good') {
@@ -236,7 +236,7 @@ function confirmTransaction() {
     });
 
     console.time('send transac');
-    var xhr = POSTRequest('/transaction.php', data, function() {
+    POSTRequest('/transaction.php', data, function() {
         console.timeEnd('send transac');
         console.log(this);
 
